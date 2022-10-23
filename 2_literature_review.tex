@@ -1,0 +1,33 @@
+\chapter{Literature Review}
+
+
+\label{chapter:literature_review}
+
+
+\section{Introduction}
+There are several methods to build question answering systems, this literature review focuses on document processing and answer processing, detailing the most common and latest techniques used when building the systems.
+
+\section{Term similarity based QA}
+Traditional search engines use terms in the search query to match the similarity of the question to the available documents. One of the first systems to implement term based search was Smart (System for the Mechanical Analysis and Retrieval of Text) \cite{10.5555/1102022}, developed in 1971, it used TF-IDF to rank the relevant documents for a query. Similar implementations of Smart have lead to successful open-source and commercial implementations like Lucene \cite{bialecki2012apache} or Elasticsearch \cite{elasticsearch2018elasticsearch}, which are widely used as single-website search engines \cite{andrews2005magic}. 
+
+Term based searches can be further refined to extract passages within the documents, these can be defined to be individual sentences, series of sentences, or other pre-defined or dynamic lengths of text. There are several techniques to extract and rank the passages \cite{tellex2003quantitative}, which include: 
+\begin{itemize}
+	\item \textbf{MITRE}: Each individual sentence becomes a passage, and word overlap is used to rank them \cite{light2001analyses}.
+	\item \textbf{MultiText}: The passage is determined by a variable sized window that starts and ends with a query term, creating passages of arbitrary length. The passages are ranked by inverse document frequency while penalizing longer passages \cite{clarke2000question}.
+	\item \textbf{Alicante}: The passage length is parametrized at runtime, by specifying the number of sentences to be included in each overlapping window passage. Each window is then scored using cosine similarity between each sentence and the query's TF-IDF vector, as well as the similarity amongst the sentences within the passage \cite{vicedo2002university}.
+\end{itemize}
+
+\section{Natural Language Processing}
+Layering Natural Language Processing techniques over traditional information retrieval methods adds nuance to the extraction. Multiple techniques can be used to improve results, encoding both the query and the potential passages:
+
+\begin{itemize}
+	\item \textbf{TF-IDF}: A non-contextual purely statistical methods use the relative frequency of a term when compared to the frequency of the same term over the whole corpus \cite{5392697}. While efficient and widely used, it does not use any external corpora to improve results. Cosine similarity is generally used between the encoded question vectors and the encoded passages.
+	\item \textbf{Word2Vec}: The encoder is built by training a shallow neural network to learn word associations based on their context \cite{mikolov2013efficient}. The vectors can be trained on a large external corpus, on the target documents containing the potential answer, or on a combination of both. The vectors of all the words in a given passage can be aggregated with Doc2Vec \cite{le2014distributed}, by averaging or concatenating them, and appending a paragraph ID.
+	\item \textbf{BERT}: This open source framework, Bidirectional Encoder Representations from Transformers \cite{devlin2018bert}, uses a combination of two techniques to encode passages: Masked Language Modelling, where the model is trained to predict the missing word on a given sentence; and Next Sentence Prediction, where the model is trained to predict the sentence after the current one. BERT can be further fine-tuned to the specific corpora to improve question answering quality on restricted domains.
+\end{itemize}
+
+These techniques can be used individually or in conjunction to build a question answering pipeline.
+
+\section{Knowledge Base QA}
+Knowledge Base Question Answering works with the potential answer in structured data instead of unstructured documents. These systems rely on translating unstructured questions to database queries. Questions have to be first categorized by their goal \cite{YANG20159086}, e.g. is it a "who" question or a "what" question, named entities are then extracted from the question, and the combination of those is used to map a predicate to be extracted from the knowledge base.
+
